@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pagamentos Pendentes - MOSTRA SESI STEAM</title>
+<style>
+:root{--bg:#f6f5f1;--card:#fff;--tx:#1f1f1c;--mut:#6b6b64;--bd:#dcdad2;--ac:#2f6f4f;--ok:#e3f2e9;--oktx:#1f6b43;--bad:#fbeaea;--badtx:#a13a3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17171a;--card:#222226;--tx:#ecebe6;--mut:#a09f98;--bd:#3a3a40;--ac:#5fb88a;--ok:#1f3329;--oktx:#7fd1a4;--bad:#3a2325;--badtx:#e58a8a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17171a;--card:#222226;--tx:#ecebe6;--mut:#a09f98;--bd:#3a3a40;--ac:#5fb88a;--ok:#1f3329;--oktx:#7fd1a4;--bad:#3a2325;--badtx:#e58a8a;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.4 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:1.4rem;margin:8px 0 16px}
+.tabs{display:flex;gap:8px;margin-bottom:14px}
+.tabs button{flex:1;padding:10px;border:1px solid var(--bd);background:var(--card);color:var(--tx);border-radius:10px;font:inherit;font-weight:600;cursor:pointer}
+.tabs button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:14px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stat{background:var(--bg);border-radius:10px;padding:10px}
+.stat b{display:block;font-size:1.15rem}
+.stat span{font-size:.75rem;color:var(--mut)}
+.row{display:grid;grid-template-columns:28px 1fr auto auto;gap:8px;align-items:center;padding:10px;border:1px solid var(--bd);border-radius:10px;margin-bottom:6px;background:var(--bad)}
+.row.paid{background:var(--ok)}
+.n{color:var(--mut);font-size:.85rem;text-align:right}
+.nome{font-weight:500;overflow-wrap:anywhere}
+.nome.vz{color:var(--mut);font-weight:400}
+.por{display:block;font-size:.8rem;color:var(--mut);font-weight:400}
+.val{font-weight:600;white-space:nowrap}
+.tag{font-size:.8rem;font-weight:600;padding:3px 10px;border-radius:99px;white-space:nowrap;color:var(--badtx);border:1px solid var(--badtx)}
+.paid .tag{color:var(--oktx);border-color:var(--oktx)}
+@media(max-width:480px){.row{grid-template-columns:24px 1fr auto}.val{grid-column:2;grid-row:2}.tag{grid-column:3;grid-row:2}}
+</style>
+</head>
+<body>
+<main>
+<h1>Pagamentos Pendentes - MOSTRA SESI STEAM</h1>
+<div class="tabs" id="tabs"></div>
+<div id="app"></div>
+</main>
+<script>
+
+var DADOS = {
+  doces: {
+    total: 87,   
+    pessoas: [
+      {nome:"Agatha Rocha", pago:false, por:""},  
+      {nome:"Agatha de Jesus", pago:false, por:""},  
+      {nome:"Alonso Sena", pago:false, por:""},  
+      {nome:"Alysson Miranda", pago:false, por:""}, 
+      {nome:"Ana Clara", pago:false, por:""},  
+      {nome:"Breno Mota", pago:false, por:""},  
+      {nome:"Christian Janael", pago:false, por:""},  
+      {nome:"Diego Damasceno", pago:false, por:""},  
+      {nome:"Enzo Miguel", pago:false, por:""},  
+      {nome:"Fernanda Queiroz", pago:false, por:""},  
+      {nome:"Gabriel Coelho", pago:false, por:""},  
+      {nome:"Gabriel Cruz", pago:false, por:""},  
+      {nome:"Gabriel Santana", pago:false, por:""},  
+      {nome:"Guilherme de Jesus", pago:false, por:""},  
+      {nome:"Guilherme Leão", pago:false, por:""},  
+      {nome:"Guilherme Moraes", pago:false, por:""},
+      {nome:"Isaac Marcos", pago:false, por:""},  
+      {nome:"João Gabriel", pago:false, por:""},  
+      {nome:"João Manoel", pago:false, por:""},  
+      {nome:"Joaquim Morbeck", pago:false, por:""},  
+      {nome:"Luan Matheus", pago:false, por:""},  
+      {nome:"Lucas Gabriel", pago:true, por:""},  
+      {nome:"Lucas Gonzáles", pago:false, por:""},  
+      {nome:"Luís Felipe", pago:false, por:""},  
+      {nome:"Luís Henrique", pago:false, por:""},  
+      {nome:"Nelson Luna", pago:false, por:""},  
+      {nome:"Maria Eduarda", pago:false, por:""},  
+      {nome:"Matheus Rocha", pago:false, por:""},  
+      {nome:"Matheus Tito", pago:false, por:""},  
+      {nome:"Otávio de Jesus", pago:false, por:""},  
+      {nome:"Rafaela Testai", pago:false, por:""},  
+      {nome:"Richard Araújo", pago:false, por:""},  
+      {nome:"Rodrigo Porto", pago:false, por:""},  
+      {nome:"Rodrigo Oliveira", pago:false, por:""},  
+      {nome:"Sofia Créscencio", pago:false, por:""},  
+      {nome:"Vitor Café", pago:false, por:""},  
+      {nome:"Yan Leal", pago:false, por:""},  
+      {nome:"Yan Santos", pago:false, por:""},  
+    ]
+  },
+  banner: {
+    total: 75,  
+    pessoas: [
+      {nome:"Agatha Rocha", pago:true, por:""},  
+      {nome:"Agatha de Jesus", pago:false, por:""},  
+      {nome:"Alonso Sena", pago:true, por:""},  
+      {nome:"Alysson Miranda", pago:true, por:""},  
+      {nome:"Ana Clara", pago:true, por:""},  
+      {nome:"Breno Mota", pago:false, por:""},  
+      {nome:"Christian Janael", pago:false, por:""},  
+      {nome:"Diego Damasceno", pago:true, por:""},  
+      {nome:"Enzo Miguel", pago:true, por:""},  
+      {nome:"Fernanda Queiroz", pago:true, por:""},  
+      {nome:"Gabriel Coelho", pago:true, por:""},  
+      {nome:"Gabriel Cruz", pago:true, por:""},  
+      {nome:"Gabriel Santana", pago:true, por:""},  
+      {nome:"Guilherme de Jesus", pago:true, por:""},  
+      {nome:"Guilherme Leão", pago:true, por:""},  
+      {nome:"Guilherme Moraes", pago:true, por:""},  
+      {nome:"Isaac Marcos", pago:false, por:""}, 
+      {nome:"João Gabriel", pago:true, por:""},  
+      {nome:"João Manoel", pago:true, por:""},  
+      {nome:"Joaquim Morbeck", pago:true, por:""}, 
+      {nome:"Luan Matheus", pago:false, por:""},  
+      {nome:"Lucas Gabriel", pago:true, por:""},  
+      {nome:"Lucas Gonzáles", pago:true, por:""},  
+      {nome:"Luís Felipe", pago:true, por:""},  
+      {nome:"Luís Henrique", pago:false, por:""},  
+      {nome:"Nelson Luna", pago:true, por:""},  
+      {nome:"Maria Eduarda", pago:true, por:""},  
+      {nome:"Matheus Rocha", pago:true, por:""},  
+      {nome:"Matheus Tito", pago:false, por:""},  
+      {nome:"Otávio de Jesus", pago:true, por:""},  
+      {nome:"Rafaela Testai", pago:true, por:""},  
+      {nome:"Richard Araújo", pago:true, por:""},  
+      {nome:"Rodrigo Porto", pago:false, por:""},  
+      {nome:"Rodrigo Oliveira", pago:true, por:""},  
+      {nome:"Sofia Créscencio", pago:true, por:""},  
+      {nome:"Vitor Café", pago:true, por:""},  
+      {nome:"Yan Leal", pago:true, por:""},  
+      {nome:"Yan Santos", pago:true, por:""},  
+    ]
+  }
+};
+
+
+var PARTES=[{id:"doces",nome:"Parte 1 · Doces e balas"},{id:"banner",nome:"Parte 2 · Banner"}];
+var ativa=0;
+function brl(v){return v.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;")}
+
+function tabs(){var t=document.getElementById("tabs");t.innerHTML="";PARTES.forEach(function(p,i){var b=document.createElement("button");b.textContent=p.nome;b.className=i===ativa?"on":"";b.onclick=function(){ativa=i;tabs();render()};t.appendChild(b)})}
+
+function render(){
+  var d=DADOS[PARTES[ativa].id],n=d.pessoas.length,cota=d.total/n;
+  var pagos=d.pessoas.filter(function(x){return x.pago}).length;
+  var h='<div class="card"><div class="stats">'+
+  '<div class="stat"><b>'+brl(d.total)+'</b><span>Valor total</span></div>'+
+  '<div class="stat"><b>'+brl(cota)+'</b><span>Cada pessoa paga</span></div>'+
+  '<div class="stat"><b>'+pagos+' / '+n+'</b><span>Pagaram</span></div>'+
+  '<div class="stat"><b>'+brl(cota*pagos)+'</b><span>Arrecadado</span></div>'+
+  '<div class="stat"><b>'+brl(d.total-cota*pagos)+'</b><span>Falta receber</span></div></div></div>';
+  d.pessoas.forEach(function(x,i){
+    h+='<div class="row'+(x.pago?' paid':'')+'"><span class="n">'+(i+1)+'</span>'+
+    '<span class="nome'+(x.nome?'':' vz')+'">'+(x.nome?esc(x.nome):'—')+
+    (x.pago&&x.por?'<span class="por">em nome de: '+esc(x.por)+'</span>':'')+'</span>'+
+    '<span class="val">'+brl(cota)+'</span>'+
+    '<span class="tag">'+(x.pago?'Pago':'Pendente')+'</span></div>';
+  });
+  document.getElementById("app").innerHTML=h;
+}
+tabs();render();
+</script>
+</body>
+</html>
